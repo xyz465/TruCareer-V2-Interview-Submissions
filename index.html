@@ -112,7 +112,14 @@ class Component {
   setRoundType(i,val){ this.d.rounds[i].type=val; this.dirty=true; this.paint(); }
   addQuestion(i){ this.d.rounds[i].qs.push(''); this.paint(); }
   removeQuestion(i,j){ this.d.rounds[i].qs.splice(j,1); this.paint(); }
-  setQuestion(i,j,val){ this.d.rounds[i].qs[j]=val; this.dirty=true; }
+  setQuestion(i,j,val){ this.d.rounds[i].qs[j]=val; this.dirty=true; this.refreshNextButton(); }
+  refreshNextButton(){
+    var btn = document.querySelector('#iv-root button[onclick="IV.next()"]');
+    if(!btn) return;
+    var canNext = this.canNext() && !this.submitting;
+    btn.disabled = !canNext;
+    btn.style.cssText = 'height:48px;padding:0 26px;border-radius:8px;border:none;font-size:15px;font-weight:600;background:#0D2200;color:#FFFFFF;'+(canNext?'cursor:pointer':'opacity:0.4;cursor:not-allowed');
+  }
   grow(el){ el.style.height='auto'; el.style.height=(el.scrollHeight+2)+'px'; }
   canNext(){
     var t=this.d;
