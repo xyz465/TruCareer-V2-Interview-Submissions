@@ -42,12 +42,13 @@ class Component {
     this.submitError = false;
     this.paint();
   }
-  empty(){ return {company:'',role:'',outcome:'',stars:0,difficulty:'',comments:'',expLevel:'',when:'',rounds:[{type:'',qs:['']}]}; }
+  empty(){ return {company:'',role:'',outcome:'',stars:0,difficulty:'',comments:'',expLevel:'',when:'',month:'',rounds:[{type:'',qs:['']}]}; }
 
   /* ---- constants ---- */
   get EXP_LEVELS(){ return [{k:'Fresher',y:'0\u20131 yr'},{k:'Junior',y:'1\u20133 yrs'},{k:'Mid',y:'4\u20136 yrs'},{k:'Senior',y:'7\u201310 yrs'},{k:'Lead',y:'10+ yrs'}]; }
   get OUTCOMES(){ return ['Got the offer','Did not get it','Still waiting','Prefer not to say']; }
   get YEARS(){ return ['2026','2025','2024','2023','Earlier']; }
+  get MONTHS(){ return [{k:'1',y:'January'},{k:'2',y:'February'},{k:'3',y:'March'},{k:'4',y:'April'},{k:'5',y:'May'},{k:'6',y:'June'},{k:'7',y:'July'},{k:'8',y:'August'},{k:'9',y:'September'},{k:'10',y:'October'},{k:'11',y:'November'},{k:'12',y:'December'}]; }
   get DIFFICULTY(){ return ['Very easy','Easy','Medium','Difficult']; }
   get ROUND_TYPES(){ return ['Phone Interview','Video Interview','Written Test','Aptitude Test','Technical Test','Viva','Group Discussion','Case Study','Presentation','Management Interview']; }
   get SELECT(){ return 'height:48px;border:1.5px solid #DBDED4;border-radius:8px;padding:0 40px 0 14px;font-size:15px;color:#111411;outline:none;width:100%;box-sizing:border-box;background:#FFFFFF;cursor:pointer;appearance:none;-webkit-appearance:none'; }
@@ -135,7 +136,7 @@ class Component {
     this.submitting=true; this.submitError=false; this.paint();
     var payload = {
       company:this.d.company, role:this.d.role, outcome:this.d.outcome, stars:this.d.stars,
-      difficulty:this.d.difficulty, expLevel:this.d.expLevel, when:this.d.when, comments:this.d.comments,
+      difficulty:this.d.difficulty, expLevel:this.d.expLevel, when:this.d.when, month:this.d.month, comments:this.d.comments,
       rounds:this.d.rounds, submittedAt:new Date().toISOString(),
       source:(typeof location!=='undefined'?location.href:'')
     };
@@ -217,6 +218,7 @@ class Component {
       this.stepHead('A little more context','Readers use these two facts to judge how closely your report matches their own situation. Skip freely.', eyebrow) +
       this.field('Your experience level at the time', this.pills(this.EXP_LEVELS, t.expLevel, 'setExp')) +
       this.field('Roughly when this happened', this.pills(this.YEARS, t.when, 'setWhen')) +
+      this.field('Which month, if you remember','<select onchange="IV.set(\'month\',this.value)" style="border:1.5px solid #DBDED4;border-radius:8px;padding:10px 12px;font-size:15px;color:#111411;background:#FFFFFF;width:100%;max-width:220px;box-sizing:border-box;font-family:inherit"><option value=""'+(t.month===''?' selected':'')+'>Not sure</option>'+this.MONTHS.map(function(m){ return '<option value="'+m.k+'"'+(t.month===m.k?' selected':'')+'>'+m.y+'</option>'; }).join('')+'</select>', '', true) +
       this.field('Anything else worth knowing','<textarea id="iv-comments" oninput="IV.set(\'comments\',this.value);IV.grow(this)" rows="3" placeholder="e.g. The technical test was two hours and unpaid." style="border:1.5px solid #DBDED4;border-radius:8px;padding:12px 14px;font-size:15px;line-height:23px;color:#111411;outline:none;resize:none;overflow:hidden;width:100%;box-sizing:border-box;font-family:inherit">'+this.esc(t.comments)+'</textarea>', '', true)
     );
   }
